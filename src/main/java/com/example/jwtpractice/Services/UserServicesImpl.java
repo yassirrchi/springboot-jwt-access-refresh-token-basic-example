@@ -5,12 +5,19 @@ import com.example.jwtpractice.Entities.AppUser;
 import com.example.jwtpractice.Repositories.RoleRepo;
 import com.example.jwtpractice.Repositories.UserRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 @Service @Transactional @Slf4j
-public class UserServicesImpl implements UserServices {
+public class UserServicesImpl implements UserServices, UserDetailsService {
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
 
@@ -49,5 +56,23 @@ public class UserServicesImpl implements UserServices {
     public List<AppUser> getUsers() {
         log.info("fetching all users");
         return userRepo.findAll();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser user=userRepo.findAppUserByUsername(username);
+        if(user==null){
+            log.info("user not found");
+            throw new UsernameNotFoundException("username not found");
+        }else{
+            log.info("userfound");
+
+        }
+        Collection<SimpleGrantedAuthority> authorities=new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getRolename()));
+        });
+
+        return new User(user.getUsername(),user.getPassword(),authorities);
     }
 }
