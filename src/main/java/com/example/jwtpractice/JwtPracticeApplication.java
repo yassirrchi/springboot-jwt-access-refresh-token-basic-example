@@ -33,7 +33,8 @@ public class JwtPracticeApplication {
      userServices.saveRole(new AppRole(null,"ROLE_ADMIN"));
      userServices.saveRole(new AppRole(null,"ROLE_SUPER_ADMIN"));
      userServices.saveUser(new AppUser(null,"yass rch","mohamed","123",new ArrayList<>()));
-     userServices.saveUser(new AppUser(null,"yass rch","yassir","123",new ArrayList<>()));userServices.addRoleToUser("yassir","ROLE_MANAGER");
+     userServices.saveUser(new AppUser(null,"yass rch","yassir","123",new ArrayList<>()));
+     userServices.addRoleToUser("yassir","ROLE_MANAGER");
      userServices.addRoleToUser("mohamed","ROLE_MANAGER");
      userServices.addRoleToUser("mohamed","ROLE_USER");
 

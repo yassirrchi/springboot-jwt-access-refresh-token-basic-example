@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,18 @@ import java.util.List;
 public class UserServicesImpl implements UserServices, UserDetailsService {
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
+    private  final PasswordEncoder passwordEncoder;
 
-    public UserServicesImpl(UserRepo userRepo, RoleRepo roleRepo) {
+    public UserServicesImpl(UserRepo userRepo, RoleRepo roleRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AppUser saveUser(AppUser user) {
         log.info("saving new user");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
